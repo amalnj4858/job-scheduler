@@ -33,6 +33,10 @@ public class RequestValidator {
             errors.put("error", "Scheduling tier is required");
         }
 
+        if(request.getIsEnabled() == null) {
+            errors.put("error", "Scheduling enable status is required");
+        }
+
         if (request.getCronExpression() != null && !request.getCronExpression().trim().isEmpty()) {
             if (!cronExpressionHelper.isValidCronExpression(request.getCronExpression())) {
                 errors.put("error", "Invalid cron expression: " + request.getCronExpression());

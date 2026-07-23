@@ -17,6 +17,7 @@ public class CronJobResponse {
     private String name;
     private String cronExpression;
     private SchedulingPrecision tier;
+    private Boolean isEnabled;
     private LocalDateTime nextRunAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

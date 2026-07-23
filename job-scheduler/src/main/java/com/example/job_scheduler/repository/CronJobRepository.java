@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface CronJobRepository extends JpaRepository<CronJob, String> {
     
-    @Query("SELECT cj FROM CronJob cj WHERE cj.tier = :tier AND cj.nextRunAt <= :now")
+    @Query("SELECT cj FROM CronJob cj WHERE cj.tier = :tier AND cj.nextRunAt <= :now AND cj.isEnabled = TRUE ")
     List<CronJob> findDueJobsByTier(@Param("tier") SchedulingPrecision tier, @Param("now") LocalDateTime now);
 }
 

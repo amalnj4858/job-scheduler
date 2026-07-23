@@ -32,6 +32,9 @@ public class CronJob {
     @Column(nullable = false)
     private LocalDateTime nextRunAt;
 
+    @Column(nullable = false)
+    private Boolean isEnabled;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

@@ -14,4 +14,5 @@ public class CreateCronJobRequest {
     private String name;
     private String cronExpression;
     private SchedulingPrecision tier;
+    private Boolean isEnabled;
 }

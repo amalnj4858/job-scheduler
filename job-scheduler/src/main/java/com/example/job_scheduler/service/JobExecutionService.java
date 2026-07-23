@@ -31,7 +31,7 @@ public class JobExecutionService {
         // Only wrap job execution in try-catch
         try {
             log.info("Executing job: {} (id: {})", cronJob.getName(), cronJob.getId());
-            simulateJobExecution();
+            simulateJobExecution(cronJob);
             status = JobRunStatus.SUCCESS;
             log.info("Job execution succeeded: {}", cronJob.getName());
         } catch (Exception e) {
@@ -64,8 +64,8 @@ public class JobExecutionService {
         }
     }
 
-    private void simulateJobExecution() throws Exception {
-        log.info("Job is running...");
+    private void simulateJobExecution(CronJob cronJob) throws Exception {
+        log.info("{} Job is running...", cronJob.getName());
         Thread.sleep(500);
     }
 

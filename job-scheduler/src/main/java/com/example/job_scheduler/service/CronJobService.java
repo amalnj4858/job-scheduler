@@ -31,6 +31,7 @@ public class CronJobService {
                     .cronExpression(request.getCronExpression())
                     .tier(request.getTier())
                     .nextRunAt(nextRunAt)
+                    .isEnabled(request.getIsEnabled())
                     .build();
 
             CronJob savedJob = cronJobRepository.save(cronJob);
@@ -67,6 +68,7 @@ public class CronJobService {
             cronJob.setCronExpression(request.getCronExpression());
             cronJob.setTier(request.getTier());
             cronJob.setNextRunAt(nextRunAt);
+            cronJob.setIsEnabled(request.getIsEnabled());
 
             CronJob updatedJob = cronJobRepository.save(cronJob);
             return toResponse(updatedJob);
@@ -87,6 +89,7 @@ public class CronJobService {
                 .name(cronJob.getName())
                 .cronExpression(cronJob.getCronExpression())
                 .tier(cronJob.getTier())
+                .isEnabled(cronJob.getIsEnabled())
                 .nextRunAt(cronJob.getNextRunAt())
                 .createdAt(cronJob.getCreatedAt())
                 .updatedAt(cronJob.getUpdatedAt())
