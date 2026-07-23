@@ -8,47 +8,16 @@ Job Scheduler is a distributed cron job management system that allows you to cre
 
 ## Key Features
 
-- **Priority-Based Scheduling**: Jobs are segregated into HIGH, MEDIUM, and LOW tiers with different execution frequencies
-- **CRUD Operations**: Full API support for creating, reading, updating, and deleting cron jobs
-- **Runtime Modifications**: Edit cron jobs anytime using PATCH API without restarting
-- **Enable/Disable Control**: Pause or resume jobs on the fly
-- **Complete Audit Trail**: All job executions are persisted—even deleted jobs' historical runs are preserved as "orphan runs"
-- **Precision-Based Threading**: More threads allocated to high-precision jobs for better accuracy
+- **Priority-Based Scheduling**: HIGH (1s), MEDIUM (5s), LOW (1m) execution tiers
+- **Full CRUD APIs**: Create, read, update, and delete cron jobs
+- **Runtime Updates**: Modify jobs anytime without restarting
+- **Audit Trail**: All job runs persisted, orphan runs kept for deleted jobs
 
 ## Architecture
 
-### Database Schema
+![Entity Relationship](docs/entity-diagram.png)
 
-```
-CronJob (1) ──→ (Many) JobRun
-    ↓
-One-to-Many relationship on cron_job_id
-When CronJob is deleted, JobRun.cronJobId becomes NULL (orphan run)
-```
-
-### System Flow
-
-```
-CronJobController → CronJobService → CronJobRepository
-                                           ↓
-                                    Job Definitions
-                                           ↓
-Scheduler ──(query valid jobs)──→ CronJobRepository
-    ↓
-    └─→ JobExecutor ──(add job run)──→ JobRunRepository
-         ↓
-    (update next run time)
-```
-
-### Execution Tiers
-
-| Tier   | Check Frequency | Use Case |
-|--------|-----------------|----------|
-| **HIGH**   | Every 1 second  | Critical jobs requiring high accuracy |
-| **MEDIUM** | Every 5 seconds | Standard scheduled tasks |
-| **LOW**    | Every 1 minute  | Low-priority background jobs |
-
-Each tier gets proportional thread allocation for optimal resource utilization.
+![Execution Flow](docs/architecture-diagram.png)
 
 ## API Reference
 
@@ -161,20 +130,6 @@ Returns all job runs whose associated cron job has been deleted. Perfect for aud
   createdAt: LocalDateTime
 }
 ```
-
-## System Diagrams
-
-### Entity Relationship
-![Entity Relationship](docs/entity-diagram.png)
-
-### Execution Flow
-![Execution Flow](docs/architecture-diagram.png)
-
-## Performance Optimizations
-
-- **Lazy Loading**: CronJob references in JobRun are lazy-loaded to avoid unnecessary queries
-- **In-Session Access**: Job details are accessed within Hibernate session boundaries to prevent LazyInitializationException
-- **Precision-Based Threads**: HIGH tier jobs get more thread resources for accurate scheduling
 
 ## Getting Started
 
