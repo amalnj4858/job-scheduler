@@ -20,7 +20,7 @@ public class JobRun {
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cron_job_id", nullable = false)
+    @JoinColumn(name = "cron_job_id", nullable = true)
     private CronJob cronJob;
 
     @Enumerated(EnumType.STRING)
