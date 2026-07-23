@@ -53,8 +53,8 @@ public class JobExecutionService {
                     cronJob.getCronExpression(),
                     finishedAt
             );
-            cronJob.setNextRunAt(nextRunAt);
-            cronJobRepository.save(cronJob);
+            // Update only the nextRunAt column to avoid overwriting concurrent changes
+            cronJobRepository.updateNextRunAt(cronJob.getId(), nextRunAt);
             log.info("Job next run scheduled: {} (id: {}). Next run: {}", 
                     cronJob.getName(), cronJob.getId(), nextRunAt);
         } catch (Exception e) {

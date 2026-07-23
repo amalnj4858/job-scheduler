@@ -15,5 +15,9 @@ public interface CronJobRepository extends JpaRepository<CronJob, String> {
     
     @Query("SELECT cj FROM CronJob cj WHERE cj.tier = :tier AND cj.nextRunAt <= :now AND cj.isEnabled = TRUE ")
     List<CronJob> findDueJobsByTier(@Param("tier") SchedulingPrecision tier, @Param("now") LocalDateTime now);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.data.jpa.repository.Query("UPDATE CronJob cj SET cj.nextRunAt = :nextRunAt WHERE cj.id = :id")
+    void updateNextRunAt(@Param("id") String id, @Param("nextRunAt") LocalDateTime nextRunAt);
 }
 
