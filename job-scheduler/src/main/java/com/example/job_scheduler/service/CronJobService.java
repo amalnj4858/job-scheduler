@@ -3,7 +3,9 @@ package com.example.job_scheduler.service;
 import com.example.job_scheduler.dto.CreateCronJobRequest;
 import com.example.job_scheduler.dto.CronJobResponse;
 import com.example.job_scheduler.entity.CronJob;
+import com.example.job_scheduler.entity.JobRun;
 import com.example.job_scheduler.repository.CronJobRepository;
+import com.example.job_scheduler.repository.JobRunRepository;
 import com.example.job_scheduler.util.CronExpressionHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CronJobService {
     private final CronJobRepository cronJobRepository;
+    private final JobRunRepository jobRunRepository;
     private final CronExpressionHelper cronExpressionHelper;
 
     public CronJobResponse createJob(CreateCronJobRequest request) {
@@ -80,6 +83,15 @@ public class CronJobService {
     public void deleteJob(String id) {
         CronJob cronJob = cronJobRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Job not found with id: " + id));
+        
+        // Set all related job runs' cron job reference to null
+        List<JobRun> relatedRuns = jobRunRepository.findByCronJob(cronJob);
+        for (JobRun run : relatedRuns) {
+            run.setCronJob(null);
+        }
+        jobRunRepository.saveAll(relatedRuns);
+        
+        // Now delete the cron job
         cronJobRepository.delete(cronJob);
     }
 

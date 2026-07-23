@@ -14,18 +14,28 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/jobs/{jobId}/runs")
+@RequestMapping("/api/jobs")
 @RequiredArgsConstructor
 public class JobRunController {
     private final JobRunService jobRunService;
 
-    @GetMapping
+    @GetMapping("/{jobId}/runs")
     public ResponseEntity<List<JobRunResponse>> getJobRuns(@PathVariable String jobId) {
         log.info("Fetching job runs for job id: {}", jobId);
         
         List<JobRunResponse> responses = jobRunService.getJobRunsByJobId(jobId);
         
         log.info("Found {} job runs for job id: {}", responses.size(), jobId);
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/runs/orphans")
+    public ResponseEntity<List<JobRunResponse>> getOrphanedRuns() {
+        log.info("Fetching orphaned job runs");
+        
+        List<JobRunResponse> responses = jobRunService.getOrphanedRuns();
+        
+        log.info("Found {} orphaned job runs", responses.size());
         return ResponseEntity.ok(responses);
     }
 }

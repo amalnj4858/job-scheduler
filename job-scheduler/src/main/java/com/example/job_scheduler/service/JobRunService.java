@@ -22,16 +22,28 @@ public class JobRunService {
                 .collect(Collectors.toList());
     }
 
+    public List<JobRunResponse> getOrphanedRuns() {
+        List<JobRun> orphanedRuns = jobRunRepository.findOrphanedRuns();
+        
+        return orphanedRuns.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
     private JobRunResponse toResponse(JobRun jobRun) {
-        return JobRunResponse.builder()
+        JobRunResponse.JobRunResponseBuilder builder = JobRunResponse.builder()
                 .id(jobRun.getId())
-                .jobId(jobRun.getCronJob().getId())
-                .jobName(jobRun.getCronJob().getName())
                 .status(jobRun.getStatus())
                 .startedAt(jobRun.getStartedAt())
                 .finishedAt(jobRun.getFinishedAt())
                 .durationMs(jobRun.getDurationMs())
-                .errorMessage(jobRun.getErrorMessage())
-                .build();
+                .errorMessage(jobRun.getErrorMessage());
+        
+        if (jobRun.getCronJob() != null) {
+            builder.jobId(jobRun.getCronJob().getId())
+                    .jobName(jobRun.getCronJob().getName());
+        }
+        
+        return builder.build();
     }
 }
